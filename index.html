@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INDICLIN — Painel de Chamadas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:#04080f;--surface:#0b1220;--border:#1a2a40;
+      --accent:#00c2ff;--accent2:#0066ff;
+      --green:#00e676;--yellow:#ffd740;--red:#ff5252;
+      --text:#e8f0fe;--muted:#5a7a9a;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);pointer-events:none;z-index:999}
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:0 0 40px rgba(0,194,255,.08)}
+    .logo{display:flex;align-items:center;gap:14px}
+    .logo-icon{width:44px;height:44px;background:linear-gradient(135deg,var(--accent2),var(--accent));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 20px rgba(0,194,255,.4)}
+    .logo-text{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;letter-spacing:4px;color:var(--accent);text-shadow:0 0 20px rgba(0,194,255,.5)}
+    .logo-sub{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+    #clock{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:600;color:var(--text);letter-spacing:2px}
+    #date-display{font-size:12px;color:var(--muted);text-align:right;letter-spacing:1px}
+    .status-dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+    main{flex:1;padding:32px 40px;display:flex;flex-direction:column;gap:28px}
+    .destaque-wrapper{background:linear-gradient(135deg,rgba(0,194,255,.06),rgba(0,102,255,.04));border:1px solid rgba(0,194,255,.25);border-radius:16px;padding:28px 36px;position:relative;overflow:hidden}
+    .destaque-wrapper::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+    .destaque-label{font-size:11px;letter-spacing:4px;color:var(--accent);text-transform:uppercase;margin-bottom:14px}
+    .destaque-chamada{display:flex;align-items:center;gap:32px;flex-wrap:wrap}
+    .destaque-paciente{font-family:'Rajdhani',sans-serif;font-size:clamp(36px,5vw,60px);font-weight:700;color:#fff;text-shadow:0 0 30px rgba(0,194,255,.3);flex:1;min-width:200px}
+    .destaque-sala{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:600;letter-spacing:2px;padding:10px 28px;border-radius:50px;box-shadow:0 0 30px rgba(0,194,255,.35);white-space:nowrap}
+    .destaque-empty{font-family:'Rajdhani',sans-serif;font-size:28px;color:var(--muted);letter-spacing:2px}
+    .salas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+    .sala-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .3s,box-shadow .3s;animation:fade-up .4s ease both}
+    .sala-card:nth-child(1){animation-delay:.05s}.sala-card:nth-child(2){animation-delay:.1s}.sala-card:nth-child(3){animation-delay:.15s}
+    .sala-card.ativa{border-color:rgba(0,194,255,.4);box-shadow:0 0 30px rgba(0,194,255,.1)}
+    .sala-header{padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02)}
+    .sala-nome{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:600;letter-spacing:2px;color:var(--accent);text-transform:uppercase}
+    .sala-badge{margin-left:auto;font-size:10px;letter-spacing:2px;padding:3px 10px;border-radius:20px;font-weight:500}
+    .sala-badge.ocupada{background:rgba(0,194,255,.12);color:var(--accent);border:1px solid rgba(0,194,255,.3)}
+    .sala-badge.livre{background:rgba(90,122,154,.12);color:var(--muted);border:1px solid rgba(90,122,154,.2)}
+    .sala-body{padding:18px 20px}
+    .sala-paciente{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.2}
+    .sala-hora{font-size:12px;color:var(--muted);margin-top:10px;letter-spacing:1px}
+    .sala-vazia{font-size:15px;color:var(--muted);font-style:italic}
+    .fila-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+    .fila-header{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+    .fila-titulo{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:3px;color:var(--muted);text-transform:uppercase}
+    .fila-count{margin-left:auto;background:rgba(255,215,64,.12);color:var(--yellow);border:1px solid rgba(255,215,64,.25);border-radius:20px;font-size:12px;padding:2px 12px;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:1px}
+    .fila-item{display:flex;align-items:center;padding:14px 24px;border-bottom:1px solid var(--border);gap:16px}
+    .fila-item:last-child{border-bottom:none}
+    .fila-pos{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--muted);width:32px;text-align:center}
+    .fila-pos.primeiro{color:var(--accent)}
+    .fila-nome{font-size:16px;font-weight:500;flex:1}
+    .fila-prioridade{font-size:11px;letter-spacing:2px;padding:3px 10px;border-radius:20px}
+    .fila-prioridade.normal{background:rgba(90,122,154,.15);color:var(--muted)}
+    .fila-prioridade.prioritario,.fila-prioridade.urgente{background:rgba(255,82,82,.12);color:var(--red);border:1px solid rgba(255,82,82,.25)}
+    .fila-prioridade.idoso,.fila-prioridade.gestante,.fila-prioridade.deficiente{background:rgba(255,215,64,.1);color:var(--yellow);border:1px solid rgba(255,215,64,.2)}
+    .fila-espera{font-size:12px;color:var(--muted);letter-spacing:1px}
+    .fila-vazia{padding:32px 24px;text-align:center;color:var(--muted);font-size:15px;font-style:italic}
+    @keyframes flash-in{0%{background:rgba(0,194,255,.25)}100%{background:transparent}}
+    .nova-chamada{animation:flash-in 1.5s ease-out}
+    footer{padding:14px 40px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface)}
+    .footer-text{font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+    .refresh-info{font-size:11px;color:var(--muted);letter-spacing:1px}
+    .loading{display:flex;align-items:center;justify-content:center;height:80px;gap:8px;color:var(--muted);font-size:13px}
+    .spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes fade-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .header-right{display:flex;align-items:center;gap:24px}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🏥</div>
+    <div>
+      <div class="logo-text">INDICLIN</div>
+      <div class="logo-sub">Painel de Atendimento</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div style="text-align:right">
+      <div id="clock">--:--:--</div>
+      <div id="date-display">--</div>
+    </div>
+    <div class="status-dot" title="Sistema online"></div>
+  </div>
+</header>
+
+<main>
+  <div class="destaque-wrapper" id="destaque-wrapper">
+    <div class="destaque-label">📢 Chamada atual</div>
+    <div class="destaque-chamada" id="destaque-chamada">
+      <div class="destaque-empty">Aguardando chamada...</div>
+    </div>
+  </div>
+
+  <div class="salas-grid" id="salas-grid">
+    <div class="loading"><div class="spinner"></div> Carregando salas...</div>
+  </div>
+
+  <div class="fila-section">
+    <div class="fila-header">
+      <span style="font-size:16px">👥</span>
+      <span class="fila-titulo">Fila de Espera</span>
+      <span class="fila-count" id="fila-count">0 aguardando</span>
+    </div>
+    <div id="fila-lista">
+      <div class="loading"><div class="spinner"></div> Carregando fila...</div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span class="footer-text">INDICLIN — Sistema de Gestão Clínica</span>
+  <span class="refresh-info" id="refresh-info">Atualizando...</span>
+</footer>
+
+<script>
+const SUPABASE_URL  = 'https://aosuiszgylohhjgeusgg.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFvc3Vpc3pneWxvaGhqZ2V1c2dnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5NjQzNzcsImV4cCI6MjA4MTU0MDM3N30.CiGKMGVHLD047vOjRxXwxTNg1Z09P3nLy8PZGtB55vw';
+const INTERVAL_MS   = 5000;
+
+const SALAS = [
+  { id: '0d4c4846-96f4-4c48-9d58-0ee50566da12', nome: 'Consultório 1', icon: '🩺' },
+  { id: '529b09bb-1176-494e-8571-152548e8f5e4', nome: 'Consultório 2', icon: '🩺' },
+  { id: '43dddda5-d559-4130-b5e8-25af9d370872', nome: 'Recepção',      icon: '🪑' },
+];
+
+async function fetchSB(path) {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers: {
+      'apikey': SUPABASE_ANON,
+      'Authorization': `Bearer ${SUPABASE_ANON}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+
+function formatTime(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function esperaLabel(iso) {
+  if (!iso) return '';
+  const diff = Math.floor((Date.now() - new Date(iso)) / 60000);
+  if (diff < 1) return 'agora';
+  if (diff === 1) return '1 min';
+  return diff + ' min';
+}
+
+function cap(nome) {
+  if (!nome) return 'Paciente';
+  return nome.split(' ').map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join(' ');
+}
+
+function prioLabel(p) {
+  const m = { normal:'Normal', prioritario:'Prioritário', urgente:'Urgente', idoso:'Idoso', gestante:'Gestante', deficiente:'PcD' };
+  return m[(p||'normal').toLowerCase()] || p || 'Normal';
+}
+
+// Relógio
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent = now.toLocaleTimeString('pt-BR');
+  document.getElementById('date-display').textContent =
+    now.toLocaleDateString('pt-BR', { weekday:'long', day:'2-digit', month:'long' });
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+let ultimaChamadaId = null;
+let audioCtx = null;
+
+function beep() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    [440, 550, 660].forEach((freq, i) => {
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.frequency.value = freq; o.type = 'sine';
+      g.gain.setValueAtTime(0.18, audioCtx.currentTime + i * 0.15);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.15 + 0.3);
+      o.start(audioCtx.currentTime + i * 0.15);
+      o.stop(audioCtx.currentTime + i * 0.15 + 0.3);
+    });
+  } catch(e) {}
+}
+
+function renderDestaque(chamada, nomePac) {
+  const el = document.getElementById('destaque-chamada');
+  const wrapper = document.getElementById('destaque-wrapper');
+  if (!chamada) {
+    el.innerHTML = '<div class="destaque-empty">Aguardando chamada...</div>';
+    return;
+  }
+  const sala = SALAS.find(s => s.id === chamada.sala_id);
+  if (chamada.id !== ultimaChamadaId) {
+    ultimaChamadaId = chamada.id;
+    beep();
+    wrapper.classList.add('nova-chamada');
+    setTimeout(() => wrapper.classList.remove('nova-chamada'), 1500);
+  }
+  el.innerHTML = `
+    <div class="destaque-paciente">${cap(nomePac)}</div>
+    <div class="destaque-sala">📍 ${sala ? sala.nome : 'Sala'}</div>
+  `;
+}
+
+function renderSalas(chamadas, pMap) {
+  const grid = document.getElementById('salas-grid');
+  grid.innerHTML = '';
+  SALAS.forEach(sala => {
+    const c = chamadas.find(x => x.sala_id === sala.id && x.status === 'chamado');
+    const card = document.createElement('div');
+    card.className = 'sala-card' + (c ? ' ativa' : '');
+    card.innerHTML = `
+      <div class="sala-header">
+        <span style="font-size:18px">${sala.icon}</span>
+        <span class="sala-nome">${sala.nome}</span>
+        <span class="sala-badge ${c ? 'ocupada' : 'livre'}">${c ? 'CHAMADO' : 'LIVRE'}</span>
+      </div>
+      <div class="sala-body">
+        ${c
+          ? `<div class="sala-paciente">${cap(pMap[c.paciente_id])}</div>
+             <div class="sala-hora">⏰ Chamado às ${formatTime(c.chamado_em)}</div>`
+          : '<div class="sala-vazia">Nenhum paciente chamado</div>'
+        }
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function renderFila(fila, pMap) {
+  document.getElementById('fila-count').textContent = fila.length + ' aguardando';
+  const lista = document.getElementById('fila-lista');
+  if (fila.length === 0) {
+    lista.innerHTML = '<div class="fila-vazia">Nenhum paciente na fila no momento</div>';
+    return;
+  }
+  lista.innerHTML = fila.map((item, idx) => {
+    const prio = (item.prioridade || 'normal').toLowerCase();
+    return `
+      <div class="fila-item">
+        <div class="fila-pos ${idx === 0 ? 'primeiro' : ''}">${item.posicao || idx + 1}</div>
+        <div class="fila-nome">${cap(pMap[item.paciente_id])}</div>
+        <span class="fila-prioridade ${prio}">${prioLabel(prio)}</span>
+        <div class="fila-espera">${esperaLabel(item.chegou_em)}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function refresh() {
+  try {
+    const [filaData, chamadosData] = await Promise.all([
+      fetchSB('chamadas_fila?status=eq.aguardando&order=posicao.asc&limit=20'),
+      fetchSB('chamadas_fila?status=eq.chamado&order=chamado_em.desc&limit=10')
+    ]);
+
+    const todos = [...filaData, ...chamadosData];
+    const ids = [...new Set(todos.map(r => r.paciente_id).filter(Boolean))];
+    const pMap = {};
+
+    if (ids.length > 0) {
+      const pacs = await fetchSB(`pacientes?id=in.(${ids.join(',')})&select=id,nome`);
+      pacs.forEach(p => { pMap[p.id] = p.nome; });
+    }
+
+    renderDestaque(chamadosData[0] || null, chamadosData[0] ? pMap[chamadosData[0].paciente_id] : null);
+    renderSalas(chamadosData, pMap);
+    renderFila(filaData, pMap);
+    document.getElementById('refresh-info').textContent = 'Última atualização: ' + new Date().toLocaleTimeString('pt-BR');
+  } catch(err) {
+    document.getElementById('refresh-info').textContent = '⚠️ Erro de conexão — tentando novamente...';
+  }
+}
+
+refresh();
+setInterval(refresh, INTERVAL_MS);
+document.addEventListener('click', () => {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}, { once: true });
+</script>
+</body>
+</html>
