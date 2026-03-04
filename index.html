@@ -122,7 +122,7 @@ function flash(el){if(!el)return;el.classList.remove('nova-chamada');void el.off
 function renderSalaUnica(sala,chamado,fila,pMap){
   var med=sala.medicos&&sala.medicos.nome?'Dr(a). '+cap(sala.medicos.nome):'';
   document.getElementById('header-modo').textContent=sala.nome.toUpperCase();
-  var ff=fila.filter(function(f){return f.sala_id===sala.id||(!f.sala_id&&sala.medico_id&&f.medico_id===sala.medico_id);});
+  var ff=sala.medico_id?fila.filter(function(f){return f.sala_id===sala.id||(!f.sala_id&&f.medico_id===sala.medico_id);}):fila;
   var nova=chamado&&chamado.id!==lastId;
   if(nova){lastId=chamado.id;beep();}
   document.getElementById('main-content').innerHTML=
@@ -178,9 +178,10 @@ async function refresh(){
       var sr=await sb('chamadas_salas?id=eq.'+SALA_ID+'&select=id,nome,medico_id,medicos(nome)&limit=1');
       if(!sr||!sr.length){document.getElementById('main-content').innerHTML='<div class="loading">Sala nao encontrada</div>';return;}
       sd=sr;var s=sr[0];
+      // Sem médico vinculado = Recepção: busca tudo
       var bf=s.medico_id
         ?'chegou_em=gte.'+hoje+'T00:00:00&or=(sala_id.eq.'+s.id+',medico_id.eq.'+s.medico_id+')'
-        :'chegou_em=gte.'+hoje+'T00:00:00&sala_id=eq.'+s.id;
+        :'chegou_em=gte.'+hoje+'T00:00:00';
       var res=await Promise.all([
         sb('chamadas_fila?status=eq.chamado&'+bf+'&order=chamado_em.desc&limit=1'),
         sb('chamadas_fila?status=eq.aguardando&'+bf+'&order=posicao.asc&limit=30')
