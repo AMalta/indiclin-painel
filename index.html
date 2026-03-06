@@ -79,6 +79,13 @@
     .loading{display:flex;align-items:center;justify-content:center;height:120px;gap:8px;color:var(--muted);font-size:13px}
     .spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
+    
+    /* BLOQUEIO DE TELA SE FALTAR CLINICA_ID */
+    #block-screen {
+      position: fixed; inset: 0; background: #04080f; z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: var(--red); font-family: 'Rajdhani', sans-serif; text-align: center; padding: 20px;
+    }
   </style>
 </head>
 <body>
@@ -104,10 +111,31 @@
 var SB_URL='https://aosuiszgylohhjgeusgg.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFvc3Vpc3pneWxvaGhqZ2V1c2dnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5NjQzNzcsImV4cCI6MjA4MTU0MDM3N30.CiGKMGVHLD047vOjRxXwxTNg1Z09P3nLy8PZGtB55vw';
 var INTERVAL=5000;
-var SALA_ID=new URLSearchParams(window.location.search).get('sala')||null;
+
+var urlParams = new URLSearchParams(window.location.search);
+var SALA_ID = urlParams.get('sala') || null;
+var CLINICA_ID = urlParams.get('clinica_id') || null;
+
+// TRAVA DE SEGURANÇA MULTI-TENANT
+if (!CLINICA_ID) {
+  document.body.innerHTML = `
+    <div id="block-screen">
+      <div style="font-size: 60px; margin-bottom: 20px;">🔒</div>
+      <h2>Acesso Negado</h2>
+      <p style="font-size: 20px; color: var(--muted); margin-top: 10px;">
+        O link deste painel está incompleto.<br>
+        Por favor, adicione <b>?clinica_id=SEU_ID</b> na URL da TV.
+      </p>
+    </div>`;
+  throw new Error("Acesso bloqueado: clinica_id não fornecido.");
+}
 
 async function sbFetch(p){
-  var r=await fetch(SB_URL+'/rest/v1/'+p,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
+  // Garante que o "&" ou "?" está correto dependendo se a string já tem query params
+  var sep = p.includes('?') ? '&' : '?';
+  var finalUrl = SB_URL+'/rest/v1/'+p + sep + 'clinica_id=eq.' + CLINICA_ID;
+  
+  var r=await fetch(finalUrl,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
   if(!r.ok)throw new Error(r.status);
   return r.json();
 }
