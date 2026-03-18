@@ -99,6 +99,9 @@ var urlParams = new URLSearchParams(window.location.search);
 var SALA_ID = urlParams.get('sala') || null;
 var CLINICA_ID = urlParams.get('clinica_id') || null;
 
+// Variável que guarda o estado da Voz (atualizada via BD)
+var USAR_VOZ = false; 
+
 if (!CLINICA_ID) {
   document.body.innerHTML = `
     <div id="block-screen">
@@ -112,9 +115,11 @@ if (!CLINICA_ID) {
   throw new Error("Acesso bloqueado: clinica_id não fornecido.");
 }
 
-async function sbFetch(p){
+// Atualizado para permitir buscar usando 'id' em vez de 'clinica_id' na tabela clinicas
+async function sbFetch(p, colId){
+  colId = colId || 'clinica_id';
   var sep = p.includes('?') ? '&' : '?';
-  var finalUrl = SB_URL+'/rest/v1/'+p + sep + 'clinica_id=eq.' + CLINICA_ID;
+  var finalUrl = SB_URL+'/rest/v1/'+p + sep + colId + '=eq.' + CLINICA_ID;
   var r=await fetch(finalUrl,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
   if(!r.ok)throw new Error(r.status);
   return r.json();
@@ -188,7 +193,9 @@ function renderSalaUnica(sala, chamado, ultimas, pMap, salasMap){
   if(nova){
     lastId=chamado.id;
     beep();
-    setTimeout(function(){ falarChamada(cap(pMap[chamado.paciente_id]), sala.nome); }, 800);
+    if (USAR_VOZ) {
+      setTimeout(function(){ falarChamada(cap(pMap[chamado.paciente_id]), sala.nome); }, 800);
+    }
   }
 
   // Filtra o paciente atual do histórico
@@ -223,7 +230,9 @@ function renderGeral(salas, chamados, pMap){
   if(nova){
     lastId=ult.id;
     beep();
-    setTimeout(function(){ falarChamada(cap(pMap[ult.paciente_id]), ns); }, 800);
+    if (USAR_VOZ) {
+      setTimeout(function(){ falarChamada(cap(pMap[ult.paciente_id]), ns); }, 800);
+    }
   }
 
   // Filtra o paciente atual e mostra até 4 anteriores
@@ -250,6 +259,12 @@ function renderGeral(salas, chamados, pMap){
 // ── REFRESH ──────────────────────────────────
 async function refresh(){
   try{
+    // BUSCA A CONFIGURAÇÃO DE VOZ EM TEMPO REAL NO BANCO DE DADOS
+    var cfg = await sbFetch('clinicas?select=tv_usa_voz', 'id');
+    if (cfg && cfg.length > 0) {
+      USAR_VOZ = cfg[0].tv_usa_voz === true;
+    }
+
     var hoje=new Date().toISOString().split('T')[0];
     var sd,cd;
 
@@ -264,12 +279,10 @@ async function refresh(){
         ?'chegou_em=gte.'+hoje+'T00:00:00&or=(sala_id.eq.'+s.id+',medico_id.eq.'+s.medico_id+')'
         :'chegou_em=gte.'+hoje+'T00:00:00';
       
-      // Ajustado limit para 5 (1 destaque + 4 histórico)
       cd=await sbFetch('chamadas_fila?status=in.(chamado,atendido)&'+bf+'&order=chamado_em.desc&limit=5');
     } else {
       var r=await Promise.all([
         sbFetch('chamadas_salas?ativo=eq.true&select=id,nome,medico_id,medicos(nome)&order=nome'),
-        // Ajustado limit para 5 (1 destaque + 4 histórico)
         sbFetch('chamadas_fila?status=in.(chamado,atendido)&chegou_em=gte.'+hoje+'T00:00:00&order=chamado_em.desc&limit=5')
       ]);
       sd=r[0]; cd=r[1];
