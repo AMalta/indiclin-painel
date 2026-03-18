@@ -26,20 +26,20 @@
     /* DESTAQUE GERAL */
     .destaque-wrapper{background:linear-gradient(135deg,rgba(0,194,255,.06),rgba(0,102,255,.04));border:1px solid rgba(0,194,255,.25);border-radius:16px;padding:28px 36px;position:relative;overflow:hidden}
     .destaque-wrapper::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
-    .destaque-label{font-size:11px;letter-spacing:4px;color:var(--accent);text-transform:uppercase;margin-bottom:14px}
+    .destaque-label{font-size:13px;letter-spacing:4px;color:var(--accent);text-transform:uppercase;margin-bottom:14px}
     .destaque-chamada{display:flex;align-items:center;gap:32px;flex-wrap:wrap}
-    .destaque-paciente{font-family:'Rajdhani',sans-serif;font-size:clamp(40px,6vw,72px);font-weight:700;color:#fff;text-shadow:0 0 30px rgba(0,194,255,.3);flex:1;min-width:200px}
-    .destaque-sala{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:600;letter-spacing:2px;padding:10px 28px;border-radius:50px;box-shadow:0 0 30px rgba(0,194,255,.35);white-space:nowrap}
-    .destaque-empty{font-family:'Rajdhani',sans-serif;font-size:28px;color:var(--muted);letter-spacing:2px}
+    .destaque-paciente{font-family:'Rajdhani',sans-serif;font-size:clamp(40px,6vw,80px);font-weight:700;color:#fff;text-shadow:0 0 30px rgba(0,194,255,.3);flex:1;min-width:200px;line-height:1}
+    .destaque-sala{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:600;letter-spacing:2px;padding:12px 32px;border-radius:50px;box-shadow:0 0 30px rgba(0,194,255,.35);white-space:nowrap}
+    .destaque-empty{font-family:'Rajdhani',sans-serif;font-size:32px;color:var(--muted);letter-spacing:2px}
 
     /* DESTAQUE SALA ÚNICA */
     .sala-unica-destaque{background:linear-gradient(135deg,rgba(0,194,255,.06),rgba(0,102,255,.04));border:1px solid rgba(0,194,255,.25);border-radius:16px;padding:48px 36px;position:relative;overflow:hidden;text-align:center}
     .sala-unica-destaque::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
-    .sala-unica-label{font-size:11px;letter-spacing:4px;color:var(--accent);text-transform:uppercase;margin-bottom:20px}
-    .sala-unica-medico{font-size:15px;color:var(--muted);letter-spacing:2px;margin-bottom:16px}
-    .sala-unica-paciente{font-family:'Rajdhani',sans-serif;font-size:clamp(56px,10vw,110px);font-weight:700;color:#fff;text-shadow:0 0 50px rgba(0,194,255,.4);line-height:1.1}
-    .sala-unica-hora{font-size:16px;color:var(--accent);letter-spacing:2px;margin-top:12px}
-    .sala-unica-empty{font-family:'Rajdhani',sans-serif;font-size:36px;color:var(--muted);letter-spacing:3px}
+    .sala-unica-label{font-size:13px;letter-spacing:4px;color:var(--accent);text-transform:uppercase;margin-bottom:20px}
+    .sala-unica-medico{font-size:18px;color:var(--muted);letter-spacing:2px;margin-bottom:16px}
+    .sala-unica-paciente{font-family:'Rajdhani',sans-serif;font-size:clamp(56px,10vw,120px);font-weight:700;color:#fff;text-shadow:0 0 50px rgba(0,194,255,.4);line-height:1.1}
+    .sala-unica-hora{font-size:18px;color:var(--accent);letter-spacing:2px;margin-top:16px}
+    .sala-unica-empty{font-family:'Rajdhani',sans-serif;font-size:40px;color:var(--muted);letter-spacing:3px}
 
     /* STATUS DAS SALAS (modo geral) */
     .section-label{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
@@ -61,15 +61,14 @@
     .ultimas-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:800px;width:100%;margin:0 auto}
     .ultimas-header{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
     .ultimas-titulo{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:3px;color:var(--muted);text-transform:uppercase}
-    .ultima-item{display:flex;align-items:center;padding:14px 24px;border-bottom:1px solid var(--border);gap:16px}
+    .ultima-item{display:flex;align-items:center;padding:16px 24px;border-bottom:1px solid var(--border);gap:16px}
     .ultima-item:last-child{border-bottom:none}
     .ultima-item.atual{background:rgba(0,194,255,.04)}
     .ultima-num{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--muted);width:28px;text-align:center;flex-shrink:0}
-    .ultima-num.primeiro{color:var(--accent)}
-    .ultima-nome{font-size:16px;font-weight:500;flex:1}
-    .ultima-sala{font-size:12px;color:var(--accent);letter-spacing:1px}
-    .ultima-hora{font-size:12px;color:var(--muted);letter-spacing:1px;flex-shrink:0}
-    .ultimas-vazia{padding:28px 24px;text-align:center;color:var(--muted);font-size:14px;font-style:italic}
+    .ultima-nome{font-size:18px;font-weight:500;flex:1}
+    .ultima-sala{font-size:14px;color:var(--accent);letter-spacing:1px;font-weight:600}
+    .ultima-hora{font-size:13px;color:var(--muted);letter-spacing:1px;flex-shrink:0}
+    .ultimas-vazia{padding:28px 24px;text-align:center;color:var(--muted);font-size:16px;font-style:italic}
 
     @keyframes flash-in{0%{background:rgba(0,194,255,.3)}100%{background:transparent}}
     .nova-chamada{animation:flash-in 2s ease-out}
@@ -104,7 +103,7 @@
   <div class="loading"><div class="spinner"></div> Carregando...</div>
 </main>
 <footer>
-  <span class="footer-text">INDICLIN Sistema de Gestao Clinica</span>
+  <span class="footer-text">INDICLIN Sistema de Gestão Clínica</span>
   <span class="refresh-info" id="refresh-info">Atualizando...</span>
 </footer>
 <script>
@@ -116,7 +115,6 @@ var urlParams = new URLSearchParams(window.location.search);
 var SALA_ID = urlParams.get('sala') || null;
 var CLINICA_ID = urlParams.get('clinica_id') || null;
 
-// TRAVA DE SEGURANÇA MULTI-TENANT
 if (!CLINICA_ID) {
   document.body.innerHTML = `
     <div id="block-screen">
@@ -131,10 +129,8 @@ if (!CLINICA_ID) {
 }
 
 async function sbFetch(p){
-  // Garante que o "&" ou "?" está correto dependendo se a string já tem query params
   var sep = p.includes('?') ? '&' : '?';
   var finalUrl = SB_URL+'/rest/v1/'+p + sep + 'clinica_id=eq.' + CLINICA_ID;
-  
   var r=await fetch(finalUrl,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
   if(!r.ok)throw new Error(r.status);
   return r.json();
@@ -151,6 +147,19 @@ function ck(){
 setInterval(ck,1000);ck();
 
 var lastId=null,ctx=null;
+
+// ── VOZ (TEXT TO SPEECH) ─────────────────────
+function falarChamada(nomePaciente, local) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  var nomeCurto = nomePaciente.split(" ").slice(0, 2).join(" ");
+  var msg = new SpeechSynthesisUtterance();
+  msg.text = `Atenção: ${nomeCurto}. Compareça a ${local}.`;
+  msg.lang = 'pt-BR';
+  msg.rate = 0.85; 
+  window.speechSynthesis.speak(msg);
+}
+
 function beep(){
   try{
     if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();
@@ -164,6 +173,7 @@ function beep(){
     });
   }catch(e){}
 }
+
 function flash(el){
   if(!el)return;
   el.classList.remove('nova-chamada');
@@ -172,18 +182,15 @@ function flash(el){
   setTimeout(function(){el.classList.remove('nova-chamada');},2000);
 }
 
-// Renderiza lista de últimas chamadas
 function ultimasHtml(chamados, pMap, salasMap) {
   if(!chamados.length) return '<div class="ultimas-vazia">Nenhuma chamada registrada hoje</div>';
   return chamados.map(function(x, i){
     var nomeSala = salasMap && salasMap[x.sala_id] ? salasMap[x.sala_id].nome : '';
-    return '<div class="ultima-item'+(i===0?' atual':'')+'">' +
-      '<div class="ultima-num'+(i===0?' primeiro':'')+'">'+(i===0?'▶':i+1)+'</div>'+
+    return '<div class="ultima-item">' +
       '<div style="flex:1">'+
         '<div class="ultima-nome">'+cap(pMap[x.paciente_id])+'</div>'+
-        (nomeSala?'<div class="ultima-sala">'+nomeSala+'</div>':'')+
       '</div>'+
-      '<div class="ultima-hora">'+ft(x.chamado_em)+'</div>'+
+      (nomeSala?'<div class="ultima-sala">'+nomeSala+'</div>':'')+
     '</div>';
   }).join('');
 }
@@ -193,7 +200,15 @@ function renderSalaUnica(sala, chamado, ultimas, pMap, salasMap){
   var med=sala.medicos&&sala.medicos.nome?'Dr(a). '+cap(sala.medicos.nome):'';
   document.getElementById('header-modo').textContent=sala.nome.toUpperCase();
   var nova=chamado&&chamado.id!==lastId;
-  if(nova){lastId=chamado.id;beep();}
+  
+  if(nova){
+    lastId=chamado.id;
+    beep();
+    setTimeout(function(){ falarChamada(cap(pMap[chamado.paciente_id]), sala.nome); }, 800);
+  }
+
+  // Filtra o paciente atual do histórico para não aparecer duplicado embaixo
+  var historicoLimpo = ultimas.filter(function(x) { return !chamado || x.id !== chamado.id; }).slice(0, 3);
 
   document.getElementById('main-content').innerHTML=
     '<div class="sala-unica-destaque" id="dw">'+
@@ -206,7 +221,7 @@ function renderSalaUnica(sala, chamado, ultimas, pMap, salasMap){
     '</div>'+
     '<div class="ultimas-section">'+
       '<div class="ultimas-header"><span class="ultimas-titulo">🕐 Últimas Chamadas</span></div>'+
-      ultimasHtml(ultimas, pMap, salasMap)+
+      ultimasHtml(historicoLimpo, pMap, salasMap)+
     '</div>';
 
   if(nova)flash(document.getElementById('dw'));
@@ -218,9 +233,15 @@ function renderGeral(salas, chamados, pMap){
   var sm={};salas.forEach(function(s){sm[s.id]=s;});
   var ult=chamados[0]||null;
   var nova=ult&&ult.id!==lastId;
-  if(nova){lastId=ult.id;beep();}
+  
+  var ns=ult&&sm[ult.sala_id]?sm[ult.sala_id].nome:'Recepção';
 
-  // Cards status das salas
+  if(nova){
+    lastId=ult.id;
+    beep();
+    setTimeout(function(){ falarChamada(cap(pMap[ult.paciente_id]), ns); }, 800);
+  }
+
   var cards=salas.map(function(sala){
     var c=chamados.find(function(x){return x.sala_id===sala.id&&x.status==='chamado';});
     var med=sala.medicos&&sala.medicos.nome?'Dr(a). '+cap(sala.medicos.nome):null;
@@ -240,8 +261,8 @@ function renderGeral(salas, chamados, pMap){
     '</div>';
   }).join('');
 
-  // Destaque última chamada
-  var ns=ult&&sm[ult.sala_id]?sm[ult.sala_id].nome:'';
+  // Filtra o paciente atual do histórico
+  var historicoLimpo = chamados.filter(function(x) { return !ult || x.id !== ult.id; }).slice(0, 3);
 
   document.getElementById('main-content').innerHTML=
     '<div class="destaque-wrapper" id="dw">'+
@@ -256,7 +277,7 @@ function renderGeral(salas, chamados, pMap){
     '<div><div class="section-label">🏥 Status das Salas</div><div class="salas-grid">'+cards+'</div></div>'+
     '<div class="ultimas-section" style="max-width:100%">'+
       '<div class="ultimas-header"><span class="ultimas-titulo">🕐 Últimas Chamadas</span></div>'+
-      ultimasHtml(chamados, pMap, sm)+
+      ultimasHtml(historicoLimpo, pMap, sm)+
     '</div>';
 
   if(nova)flash(document.getElementById('dw'));
@@ -275,20 +296,20 @@ async function refresh(){
         return;
       }
       sd=sr; var s=sr[0];
-      // Sem médico = Recepção: busca todas as chamadas do dia
       var bf=s.medico_id
         ?'chegou_em=gte.'+hoje+'T00:00:00&or=(sala_id.eq.'+s.id+',medico_id.eq.'+s.medico_id+')'
         :'chegou_em=gte.'+hoje+'T00:00:00';
-      cd=await sbFetch('chamadas_fila?status=in.(chamado,atendido)&'+bf+'&order=chamado_em.desc&limit=8');
+      
+      // Limitamos a busca para 4 (1 destaque + 3 histórico)
+      cd=await sbFetch('chamadas_fila?status=in.(chamado,atendido)&'+bf+'&order=chamado_em.desc&limit=4');
     } else {
       var r=await Promise.all([
         sbFetch('chamadas_salas?ativo=eq.true&select=id,nome,medico_id,medicos(nome)&order=nome'),
-        sbFetch('chamadas_fila?status=in.(chamado,atendido)&chegou_em=gte.'+hoje+'T00:00:00&order=chamado_em.desc&limit=8')
+        sbFetch('chamadas_fila?status=in.(chamado,atendido)&chegou_em=gte.'+hoje+'T00:00:00&order=chamado_em.desc&limit=4')
       ]);
       sd=r[0]; cd=r[1];
     }
 
-    // Mapa de pacientes
     var ids=cd.map(function(x){return x.paciente_id;}).filter(function(id,i,a){return id&&a.indexOf(id)===i;});
     var pMap={};
     if(ids.length){
@@ -297,7 +318,6 @@ async function refresh(){
     }
 
     if(SALA_ID){
-      // Mapa de salas para exibir o nome no histórico
       var allSalas=await sbFetch('chamadas_salas?ativo=eq.true&select=id,nome&order=nome');
       var sm={};allSalas.forEach(function(s){sm[s.id]=s;});
       var chamadoAtual=cd.find(function(x){return x.status==='chamado';})||null;
@@ -315,7 +335,12 @@ async function refresh(){
 
 refresh();
 setInterval(refresh,INTERVAL);
-document.addEventListener('click',function(){if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();},{once:true});
+
+// Desbloqueia Beep e Voz no primeiro clique na tela
+document.addEventListener('click', function(){
+  if(!ctx) ctx = new(window.AudioContext||window.webkitAudioContext)();
+  if('speechSynthesis' in window) window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+}, {once:true});
 </script>
 </body>
 </html>
