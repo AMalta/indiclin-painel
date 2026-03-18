@@ -227,6 +227,62 @@ function renderSalaUnica(sala, chamado, ultimas, pMap, salasMap){
   if(nova)flash(document.getElementById('dw'));
 }
 
+// ── MODO GERAL ───────────────────────────────
+function renderGeral(salas, chamados, pMap){
+  document.getElementById('header-modo').textContent='Recepção Geral';
+  var sm={};salas.forEach(function(s){sm[s.id]=s;});
+  var ult=chamados[0]||null;
+  var nova=ult&&ult.id!==lastId;
+  
+  var ns=ult&&sm[ult.sala_id]?sm[ult.sala_id].nome:'Recepção';
+
+  if(nova){
+    lastId=ult.id;
+    beep();
+    setTimeout(function(){ falarChamada(cap(pMap[ult.paciente_id]), ns); }, 800);
+  }
+
+  var cards=salas.map(function(sala){
+    var c=chamados.find(function(x){return x.sala_id===sala.id&&x.status==='chamado';});
+    var med=sala.medicos&&sala.medicos.nome?'Dr(a). '+cap(sala.medicos.nome):null;
+    return '<div class="sala-card'+(c?' ativa':'')+'">'+
+      '<div class="sala-header">'+
+        '<span style="font-size:18px">🩺</span>'+
+        '<span class="sala-nome">'+sala.nome+'</span>'+
+        '<span class="sala-badge'+(c?' ocupada':' livre')+'">'+(c?'CHAMADO':'LIVRE')+'</span>'+
+      '</div>'+
+      '<div class="sala-body">'+
+        (med?'<div class="sala-medico-fixo">👨‍⚕️ '+med+'</div>':'')+
+        (c
+          ?'<div class="sala-paciente">'+cap(pMap[c.paciente_id])+'</div>'+
+            '<div class="sala-hora">⏰ Chamado às '+ft(c.chamado_em)+'</div>'
+          :'<div class="sala-vazia">Nenhum paciente chamado</div>')+
+      '</div>'+
+    '</div>';
+  }).join('');
+
+  // Filtra o paciente atual do histórico
+  var historicoLimpo = chamados.filter(function(x) { return !ult || x.id !== ult.id; }).slice(0, 3);
+
+  document.getElementById('main-content').innerHTML=
+    '<div class="destaque-wrapper" id="dw">'+
+      '<div class="destaque-label">📢 Chamada atual</div>'+
+      '<div class="destaque-chamada">'+
+        (ult
+          ?'<div class="destaque-paciente">'+cap(pMap[ult.paciente_id])+'</div>'+
+            (ns?'<div class="destaque-sala">📍 '+ns+'</div>':'')
+          :'<div class="destaque-empty">Aguardando chamada...</div>')+
+      '</div>'+
+    '</div>'+
+    '<div><div class="section-label">🏥 Status das Salas</div><div class="salas-grid">'+cards+'</div></div>'+
+    '<div class="ultimas-section" style="max-width:100%">'+
+      '<div class="ultimas-header"><span class="ultimas-titulo">🕐 Últimas Chamadas</span></div>'+
+      ultimasHtml(historicoLimpo, pMap, sm)+
+    '</div>';
+
+  if(nova)flash(document.getElementById('dw'));
+}
+
 // ── REFRESH ──────────────────────────────────
 async function refresh(){
   try{
